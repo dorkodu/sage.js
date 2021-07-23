@@ -8,4 +8,13 @@ export class Sage {
   constructor(options) {
 
   }
+
+  /**
+   * 
+   * @param {object} query 
+   * @param {object} [options] 
+   */
+  want(query, options) {
+
+  }
 }
