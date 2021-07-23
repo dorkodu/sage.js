@@ -6,15 +6,13 @@ export class Sage {
    * @param {string} [options.fetchPolicy]
    */
   constructor(options) {
+    /**
+     * 
+     * @param {object} query 
+     * @param {object} [options] 
+     */
+    this.want = (query, options) => {
 
-  }
-
-  /**
-   * 
-   * @param {object} query 
-   * @param {object} [options] 
-   */
-  want(query, options) {
-
+    }
   }
 }
