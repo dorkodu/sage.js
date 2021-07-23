@@ -11,7 +11,7 @@ export class Sage {
      * @param {object} query 
      * @param {object} [options] 
      */
-    this.want = (query, options) => {
+    this.want = function (query, options) {
 
     }
   }
