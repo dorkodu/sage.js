@@ -11,6 +11,7 @@
  */
 export function Sage(options) {
   const sageOptions = options;
+  /** @type {Object<string, {arguments: any[], data: object}[]>} */
   const cache = {};
 
   /**
@@ -37,16 +38,16 @@ export function Sage(options) {
   }
 
   function fetchNetwork(queryName, query) {
-      return fetch(sageOptions.url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(query)
-      }).then(response => response.json())
-    }
+    return fetch(sageOptions.url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(query)
+    }).then(response => response.json())
+  }
 
   function checkCache(queryName, query) {
     // If query name inside cache doesn't exist it hasn't been cached
-    if (cache[queryName]) return false;
+    if (cache[queryName]) return null;
 
     // Loop all previous caches with the same query name
     for (let cacheIndex = 0; cacheIndex < cache[queryName].length; ++cacheIndex) {
