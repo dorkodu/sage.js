@@ -1,6 +1,6 @@
 /**
  * 
- * @typedef {"cache-first" | "cache-only" | "cache-and-network" | "network-only"} FetchPolicy 
+ * @typedef {"cache-first" | "cache-only" | "network-only"} FetchPolicy 
  */
 
 /**
