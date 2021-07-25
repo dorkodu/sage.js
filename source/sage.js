@@ -10,10 +10,11 @@ export function Sage(options) {
 
   /**
    * 
+   * @param {string} queryName
    * @param {object} query 
    * @param {object} [options] 
    */
-  this.want = function (query, options) {
+  this.want = function (queryName, query, options) {
     return fetch(sageOptions.url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
