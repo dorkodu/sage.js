@@ -2,10 +2,11 @@
  * 
  * @param {object} options 
  * @param {string} options.url
- * @param {string} [options.fetchPolicy]
+ * @param {"cache-first" | "cache-only" | "cache-and-network" | "network-only"} [options.fetchPolicy]
  */
 export function Sage(options) {
   const sageOptions = options;
+  const cache = {};
 
   /**
    * 
