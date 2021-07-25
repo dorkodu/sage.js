@@ -27,13 +27,13 @@ export function Sage(options) {
 
     switch (fetchPolicy) {
       case "cache-first":
-        const cachedQuery = checkCache();
+        const cachedQuery = checkCache(queryName, query);
         if (cachedQuery) return cachedQuery;
-        else return fetchNetwork();
+        else return fetchNetwork(queryName, query);
       case "cache-only":
-        return checkCache();
+        return checkCache(queryName, query);
       case "network-only":
-        return fetchNetwork();
+        return fetchNetwork(queryName, query);
     }
   }
 
