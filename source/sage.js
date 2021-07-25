@@ -21,12 +21,16 @@ export function Sage(options) {
    * @param {FetchPolicy} [options.fetchPolicy] 
    */
   this.want = function (queryName, query, options) {
-    return fetch(sageOptions.url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(query)
-    }).then(response => response.json())
+	  return fetchNetwork(queryName, query);
   }
+
+  function fetchNetwork(queryName, query) {
+      return fetch(sageOptions.url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(query)
+      }).then(response => response.json())
+    }
 
   function checkCache(queryName, query) {
     // If query name inside cache doesn't exist it hasn't been cached
