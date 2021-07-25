@@ -19,9 +19,21 @@ export function Sage(options) {
    * @param {object} query 
    * @param {object} [options] 
    * @param {FetchPolicy} [options.fetchPolicy] 
+   * @returns {Promise | any}
    */
   this.want = function (queryName, query, options) {
-	  return fetchNetwork(queryName, query);
+    const fetchPolicy = options && options.fetchPolicy || sageOptions.fetchPolicy;
+
+    switch (fetchPolicy) {
+      case "cache-first":
+        const cachedQuery = checkCache();
+        if (cachedQuery) return cachedQuery;
+        else return fetchNetwork();
+      case "cache-only":
+        return checkCache();
+      case "network-only":
+        return fetchNetwork();
+    }
   }
 
   function fetchNetwork(queryName, query) {
