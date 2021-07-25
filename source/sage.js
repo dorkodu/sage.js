@@ -28,7 +28,24 @@ export function Sage(options) {
     }).then(response => response.json())
   }
 
-  function checkCache(params) {
+  function checkCache(queryName, query) {
+    // If query name inside cache doesn't exist it hasn't been cached
+    if (cache[queryName]) return false;
 
+    // Loop all previous caches with the same query name
+    for (let cacheIndex = 0; cacheIndex < cache[queryName].length; ++cacheIndex) {
+      let currentCache = cache[queryName][cacheIndex];
+
+      // If argument count is not same, this is not what we want
+      if (currentCache.arguments.length !== query.arguments.length) continue;
+
+      // Loop all arguments, and if they all aren't equal, this is not our query's cache
+      for (let argIndex = 0; argIndex < cache[queryName][i].length; ++argIndex) {
+        if (currentCache.arguments[argIndex] !== query.arguments[argIndex]) { currentCache = null; break; }
+      }
+
+      // Cache of this query has been found, return the data
+      if (currentCache) return currentCache.data;
+    }
   }
 }
