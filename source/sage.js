@@ -5,7 +5,7 @@
  * @param {string} [options.fetchPolicy]
  */
 export function Sage(options) {
-  const options = options;
+  const sageOptions = options;
 
   /**
    * 
@@ -13,6 +13,10 @@ export function Sage(options) {
    * @param {object} [options] 
    */
   this.want = function (query, options) {
-
+    return fetch(sageOptions.url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(query)
+    }).then(response => response.json())
   }
 }
