@@ -47,7 +47,7 @@ export function Sage(options) {
 
   function checkCache(queryName, query) {
     // If query name inside cache doesn't exist it hasn't been cached
-    if (cache[queryName]) return null;
+    if (!cache[queryName]) return null;
 
     // Loop all previous caches with the same query name
     for (let cacheIndex = 0; cacheIndex < cache[queryName].length; ++cacheIndex) {
