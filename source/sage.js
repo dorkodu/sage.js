@@ -1,6 +1,6 @@
 /**
  * 
- * @typedef {"cache-first" | "cache-only" | "network-only"} FetchPolicy 
+ * @typedef {"network-only" | "cache-only" | "network-or-cache" | "cache-then-network"} FetchPolicy 
  */
 
 /**
@@ -11,7 +11,19 @@
  */
 export function Sage(options) {
   const sageOptions = options;
-  /** @type {Object<string, {arguments: any[], data: object}[]>} */
+  if (sageOptions.fetchPolicy === undefined) sageOptions.fetchPolicy = "network-or-cache";
+
+  if (process.env.NODE_ENV === "development") {
+    if (!(sageOptions.fetchPolicy === "network-only" ||
+      sageOptions.fetchPolicy === "cache-only" ||
+      sageOptions.fetchPolicy === "network-or-cache" ||
+      sageOptions.fetchPolicy === "cache-then-network")) {
+      throw new Error(`Fetch policy should be set to either
+      network-only, cache-only, network-or-cache or cache-then-network.`);
+    }
+  }
+
+  /** @type {Object<string, {data: any, errors: any}>} */
   const cache = {};
 
   /**
@@ -20,19 +32,31 @@ export function Sage(options) {
    * @param {object} query 
    * @param {object} [options] 
    * @param {FetchPolicy} [options.fetchPolicy] 
-   * @returns {Promise | any}
+   * @returns {Promise<{data: any, errors: any}>}
    */
   this.want = function (queryName, query, options) {
     const fetchPolicy = options && options.fetchPolicy || sageOptions.fetchPolicy;
 
+    if (process.env.NODE_ENV === "development") {
+      if (!(fetchPolicy === "network-only" ||
+        fetchPolicy === "cache-only" ||
+        fetchPolicy === "network-or-cache" ||
+        fetchPolicy === "cache-then-network")) {
+        throw new Error(`Fetch policy should be set to either
+        network-only, cache-only, network-or-cache or cache-then-network.`);
+      }
+    }
+
     switch (fetchPolicy) {
-      case "cache-first":
-        const cachedQuery = checkCache(queryName, query);
-        if (cachedQuery) return cachedQuery;
-        else return fetchNetwork(queryName, query);
-      case "cache-only":
-        return checkCache(queryName, query);
       case "network-only":
+        return fetchNetwork(queryName, query);
+      case "cache-only":
+        return checkCache(queryName);
+      case "network-or-cache":
+        // TODO: Implement
+        return fetchNetwork(queryName, query);
+      case "cache-then-network":
+        // TODO: Implement
         return fetchNetwork(queryName, query);
     }
   }
@@ -41,28 +65,17 @@ export function Sage(options) {
     return fetch(sageOptions.url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(query)
-    }).then(response => response.json())
+      body: JSON.stringify({ [queryName]: query })
+    }).then(response => {
+      response = response.json();
+
+      cache[queryName] = response;
+
+      return { data: response.data, errors: response.errors };
+    })
   }
 
-  function checkCache(queryName, query) {
-    // If query name inside cache doesn't exist it hasn't been cached
-    if (!cache[queryName]) return null;
-
-    // Loop all previous caches with the same query name
-    for (let cacheIndex = 0; cacheIndex < cache[queryName].length; ++cacheIndex) {
-      let currentCache = cache[queryName][cacheIndex];
-
-      // If argument count is not same, this is not what we want
-      if (currentCache.arguments.length !== query.arguments.length) continue;
-
-      // Loop all arguments, and if they all aren't equal, this is not our query's cache
-      for (let argIndex = 0; argIndex < cache[queryName][i].length; ++argIndex) {
-        if (currentCache.arguments[argIndex] !== query.arguments[argIndex]) { currentCache = null; break; }
-      }
-
-      // Cache of this query has been found, return the data
-      if (currentCache) return currentCache.data;
-    }
+  function checkCache(queryName) {
+    return cache[queryName];
   }
 }
