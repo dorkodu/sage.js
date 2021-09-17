@@ -53,25 +53,28 @@ export function Sage(options) {
       case "cache-only":
         return checkCache(queryName);
       case "network-or-cache":
-        // TODO: Implement
-        return fetchNetwork(queryName, query);
+        return fetchNetwork(queryName, query).catch(() => checkCache(queryName));
       case "cache-then-network":
-        // TODO: Implement
-        return fetchNetwork(queryName, query);
+        return { cache: checkCache(queryName), promise: fetchNetwork(queryName, queryName) }
     }
   }
 
   function fetchNetwork(queryName, query) {
-    return fetch(sageOptions.url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ [queryName]: query })
-    }).then(response => {
-      response = response.json();
-
-      cache[queryName] = response;
-
-      return { data: response.data, errors: response.errors };
+    return new Promise((resolve, reject) => {
+      fetch(sageOptions.url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [queryName]: query })
+      }).then((response) => {
+        if (response.ok) {
+          response = response.json();
+          cache[queryName] = response;
+          resolve(response);
+        }
+        else {
+          reject();
+        }
+      })
     })
   }
 
