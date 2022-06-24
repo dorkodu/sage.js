@@ -1,45 +1,102 @@
 import { Sage } from "./sage";
 
+/**
+ * Sage.js
+ * -> state management library
+ * -> simplify managing remote and local data with its own protocol 
+ * -> intelligent caching
+ * -> declarative data fetching
+ *    declare data dependencies anywhere and manage in centralized way
+ */
+
+//? client oluşturma
 const api = new Sage({
   url: "http://wandergraph.dorkodu.com/api",
   headers: {
     'Authorization': 'Bearer <token>'
-  },
-  websocket: {
-    endpoint: 'wss://wandergraph.dorkodu.com/websikişsokuş',
-    onConnectionSuccess: () => console.log('Connected'),
-    onConnectionError: () => console.log('Connection Error'),
   }
 });
 
-const currentUser = api.query({
-  type: "User"
+//? üç farklı yolla veri isteyebiliyosun
+
+// 1) sorguyu oluştur ve hemen yolla (direct execution)
+const { loading, error, data } = api.query({···});
+
+// 2) sorguyu ayrı oluştur sonra yollamak için hazırla
+const CURRENT_USER = Sage.want({
+  type: "User",
+  attributes: ["name", "tag", "bio", "profilePhoto.url", "followStatus"],
+  act: "refreshUserStats",
+  links: {
+    "timeline": USER_TIMELINE //TODO: link referanslama sistemine karar ver
+  }
 });
 
-const currentUser = api.query({
+const USER_TIMELINE = Sage.want({···});
+
+const { loading, error, data } = api.query(CURRENT_USER);
+
+// 3) persisted query
+const { loading, error, data } = api.query({
   hash: "d9b687af2e555d05fb30f8ef7298a79a",
-  arguments: {
+  variables: {
     "user.id": 5,
     "auth.token": "aeff40b4fab2decbd34e0f177c1892b1",
     "filter.order.reverse": true
   }
 });
 
-const unfollowUser = api.act("unfollow", {
-  "user.id": 5
+/*--------- ALTERNATİF API ----------*/
+
+const currentUser = Sage.want("User")
+  .attributes(["name", "tag", "bio", "profilePhoto.url", "followStatus"])
+  .arguments({
+    "user.id": 123456
+  })
+  .act("update")
+
+const bestFriend = currentUser.link("bestFriend", {
+  attributes: [···],
+  arguments: {
+   "foo": "bar",
+   "DorookieMercury": true 
+  }
+});
+
+// bence sorgu nesnesi gibi daha iyi ama şöyle de olur:
+const bestFriend = currentUser.link("bestFriend")
+.attributes(["name", "tag"])
+.arguments({
+  "user.id": 123456
 })
 
+//? static query yazabilmeliyim
+const EXCHANGE_RATES = {
+  type: "ExchangeRates",
+  attributes: ["currency", "rate"],
+  arguments: {
+    referenceCurrency: "USD"
+  }
+};
 
+//? örnek bi component ile nasıl kullanabiliriz?
+function ExchangeRates() {
+  const { loading, error, data } = api.query(EXCHANGE_RATES);
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
 
+  return data.map(({ currency, rate }) => (
+    <div key={currency}>
+      <p>
+        {currency}: {rate}
+      </p>
+    </div>
+  ));
+}
 
-/**
- * THEFT:
- * https://github.com/hasura/graphqurl
- * 
- */
-
-// sunucuda sorguladığın ağaç bunun içinde işte
+//? SUNUCU TARAFI ÖRNEĞİ AMA TS İLE
+// graphql'de sorguladığın şey aslında bu tree oluyo işte
 type Query = {
   me: User
   users: [User!]!
