@@ -2,11 +2,17 @@
 
 # Sage.js
 
-**Sage.js** is the simple, lightweight and awesome Sage client for JS.
+**Sage.js** is the reference implementation for Sage, a query-based data exchange protocol for APIs, created at [dorkodu](https://dorkodu.com).
+
+> #### `Note`
+>
+> The **Sage.js** project is a *work-in-progress*.
+> Code and documentation are currently under development and are subject to change.
 
 ## Overview
 
-In any project that you use Sage, you'll need a client which manages your data requirements, handles queries, networking and the remote/local states of your data. 
+In any project that you use Sage, you'll need client/server libraries which manages your data requirements, handles queries, networking and the remote/local states of your data.
+
 This is where **Sage.js** shines!
 
 ## Features
@@ -19,23 +25,41 @@ This is where **Sage.js** shines!
       -   Keep the data fresh.
   -   Write a single query and receive data without manually tracking loading states.
 
-- #### universally compatible
+- #### Universally Compatible
 
-  -   use any build setup and any Sage API.
+  -   Use any build setup and any Sage API.
   -   Isomorphic.
-  -   runs on most browsers.
-  -   no other dependencies.
+  -   Runs on most browsers.
+  -   No other dependencies.
+  -   TypeScript support.
 
-## installation
+## Getting Started
 
-(wip)
+A general overview of Sage is available on the [repository frontpage](https://github.com/dorkodu/sage).
+That overview describes a simple set of examples and more advanced topics.
+A good way to get started with the Sage protocol is the [specification document](https://github.com/dorkodu/sage).
 
-## documentation
+## Installation
 
-the documentation can be found at: **[docs/](docs)**
+*(wip)*
 
-## license
+## Documentation
 
-sage.js is licensed under the [mit license](LICENSE).
+The documentation can be found at: **[docs/](docs/)**
+*(wip)*
 
-copyright (c) 2021-beyond dorkodu — [dorkodu.com](https://dorkodu.com)
+## Contributing
+
+We welcome your contributions, even if it is just a simple idea.
+
+## Author
+
+**Doruk Eray** — [GitHub](https://github.com/dorukeray) **·** [Twitter](https://twitter.com/dorukeray_) **·** [Website](https://doruk.dorkodu.com) · [doruk@dorkodu.com](mailto:doruk@dorkodu.com)
+
+See also some of our [contributions](https://libre.dorkodu.com) that we are making at [dorkodu](https://dorkodu.com) to the open source software community.
+
+## License
+
+Sage.js is licensed under the [MIT License](LICENSE).
+
+Copyright (c) 2022 [dorkodu](https://dorkodu.com)
